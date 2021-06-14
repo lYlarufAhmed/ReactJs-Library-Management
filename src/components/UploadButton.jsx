@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UploadButton({inputHandler}) {
+export default function UploadButton({inputHandler, name}) {
   const classes = useStyles();
 
   return (
@@ -24,7 +24,7 @@ export default function UploadButton({inputHandler}) {
         id="contained-button-file"
         onInput={inputHandler}
         type="file"
-        name={'upload'}
+        name={name}
       />
       <label htmlFor="contained-button-file">
         <Button variant="contained" color="primary" component="span">

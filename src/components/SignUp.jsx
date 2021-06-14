@@ -30,19 +30,23 @@ export default function SignUp(props) {
 
     const handleInput = (e) => {
         setState(prevState => {
-            prevState[e.target.name] = e.target.value
+            prevState[e.target.name] = e.target.name === 'avatar' ? e.target.files[0] : e.target.value
             return {...prevState}
         })
     }
 
     const handleSubmit = async () => {
+
+        let formData = new FormData()
+        formData.append('email', state.email)
+        formData.append('name', state.name)
+        formData.append('password', state.password)
+        formData.append('confirm-password', state["confirm-password"])
+        formData.append('avatar', state.avatar)
+
         let res = await fetch('http://localhost:3001/auth', {
             method: 'POST',
-            body: JSON.stringify(state),
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-
+            body: formData,
         })
 
         let parsed = await res.json()
@@ -67,12 +71,12 @@ export default function SignUp(props) {
                            required={true}
                            variant="outlined"/>
                 <div>
-                    <UploadButton inputHandler={handleInput}/>
+                    <UploadButton inputHandler={handleInput} name={'avatar'}/>
                     <br/>
-                    <Typography variant={'body2'}>{state.upload} </Typography>
+                    <Typography variant={'body2'}>{state.avatar && state.avatar.name} </Typography>
                 </div>
                 <Button variant={'contained'} onClick={handleSubmit}
-                        disabled={!(state.name && state.password && state["confirm-password"] && ( state.password === state["confirm-password"] ) && state.email)}>Submit</Button>
+                        disabled={!(state.name && state.password && state["confirm-password"] && (state.password === state["confirm-password"]) && state.email)}>Submit</Button>
             </form>
         </Paper>
 
