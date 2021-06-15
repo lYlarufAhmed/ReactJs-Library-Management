@@ -3,6 +3,7 @@ import React from "react";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import BookList from "./BookList";
 import SignUp from "./SignUp";
+import Login from "./Login";
 
 
 export default function App() {
@@ -16,6 +17,10 @@ export default function App() {
                     </Route>
                     <Route path={'/signup'}>
                         <SignUp/>
+                    </Route>
+
+                    <Route path={'/login'}>
+                        <Login/>
                     </Route>
                     <Route path={'/books'}>
                         <BookList/>

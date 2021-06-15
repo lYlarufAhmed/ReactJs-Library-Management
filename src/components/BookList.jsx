@@ -9,26 +9,70 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete'
 import ConfirmDialog from "./ConfirmDialog";
 import FeedbackDialog from "./FeedbackDialog";
+import {useHistory} from 'react-router-dom'
+import axios from "axios";
 
+
+const BOOK_LIST_URL = 'http://localhost:3001/books/api'
 
 export default function BookList(props) {
+    const history = useHistory()
     let [state, setState] = useState({
         loading: true, books: [], openDialog: false,
         currentBook: null,
-        openFeedback: false, feedback: ''
+        openFeedback: false, feedback: '',
+
     })
     useEffect(() => {
         const getBooks = async () => {
-            let res = await fetch('http://localhost:3001/books/api')
-            let books = await res.json()
-            setState(prev => {
-                prev.loading = false
-                prev.books = books
-                return JSON.parse(JSON.stringify(prev))
-            })
-            console.log(books)
+            let token = localStorage.getItem('loggedInUser')
+            if (token) {
+                let res = await fetch('http://localhost:3001/books/api', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+                if (res.status === 200) {
+                    let books = await res.json()
+                    setState(prev => {
+                        prev.loading = false
+                        prev.books = books
+                        return JSON.parse(JSON.stringify(prev))
+                    })
+                    console.log(books)
+                } else {
+                    setState(prevState => ({
+                        ...prevState,
+                        feedback: 'Token expired',
+                        openFeedback: true,
+                        loading: false
+                    }))
+                }
+
+            } else history.push('/login')
+
         }
-        getBooks()
+        // getBooks()
+        const axiosGetBooks = async () => {
+            const results = await axios.get(BOOK_LIST_URL)
+            console.log(results)
+            if (results.status === 200) {
+                setState(prev => {
+                    prev.loading = false
+                    prev.books = results.data
+                    return JSON.parse(JSON.stringify(prev))
+                })
+            } else {
+                setState(prevState => ({
+                    ...prevState,
+                    feedback: 'Token expired',
+                    openFeedback: true,
+                    loading: false
+                }))
+            }
+
+        }
+        axiosGetBooks()
     }, [])
     const handleClickOpen = (id) => {
         setState(prevState => {

@@ -5,6 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import {Button} from "@material-ui/core";
 import UploadButton from "./UploadButton";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,7 +26,8 @@ export default function SignUp(props) {
         'name': '',
         'email': '',
         'password': '',
-        'confirm-password': ''
+        'confirm-password': '',
+        'loading': false
     })
 
     const handleInput = (e) => {
@@ -37,6 +39,7 @@ export default function SignUp(props) {
 
     const handleSubmit = async () => {
 
+        setState(prev => ({...prev, 'loading': true}))
         let formData = new FormData()
         formData.append('email', state.email)
         formData.append('name', state.name)
@@ -51,6 +54,7 @@ export default function SignUp(props) {
 
         let parsed = await res.json()
         console.log(parsed)
+        setState(prev => ({...prev, 'loading': false}))
     }
 
     return (
@@ -76,7 +80,10 @@ export default function SignUp(props) {
                     <Typography variant={'body2'}>{state.avatar && state.avatar.name} </Typography>
                 </div>
                 <Button variant={'contained'} onClick={handleSubmit}
-                        disabled={!(state.name && state.password && state["confirm-password"] && (state.password === state["confirm-password"]) && state.email)}>Submit</Button>
+                        disabled={!(state.name && state.password && state["confirm-password"] && (
+                            state.password === state["confirm-password"]
+                        ) && !state.loading && state.email)}>{state.loading ?
+                    <CircularProgress size={28}/> : 'Sign Up'}</Button>
             </form>
         </Paper>
 
