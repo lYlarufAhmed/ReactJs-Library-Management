@@ -13,7 +13,7 @@ import {useHistory} from 'react-router-dom'
 import axios from "axios";
 
 
-const BOOK_LIST_URL = 'http://localhost:3001/books/api'
+const BOOK_LIST_URL = '/books/api'
 
 export default function BookList(props) {
     const history = useHistory()
@@ -24,35 +24,35 @@ export default function BookList(props) {
 
     })
     useEffect(() => {
-        const getBooks = async () => {
-            let token = localStorage.getItem('loggedInUser')
-            if (token) {
-                let res = await fetch('http://localhost:3001/books/api', {
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                })
-                if (res.status === 200) {
-                    let books = await res.json()
-                    setState(prev => {
-                        prev.loading = false
-                        prev.books = books
-                        return JSON.parse(JSON.stringify(prev))
-                    })
-                    console.log(books)
-                } else {
-                    setState(prevState => ({
-                        ...prevState,
-                        feedback: 'Token expired',
-                        openFeedback: true,
-                        loading: false
-                    }))
-                }
-
-            } else history.push('/login')
-
-        }
-        // getBooks()
+        // const getBooks = async () => {
+        //     let token = localStorage.getItem('loggedInUser')
+        //     if (token) {
+        //         let res = await fetch('http://localhost:3001/books/api', {
+        //             headers: {
+        //                 'Authorization': 'Bearer ' + token
+        //             }
+        //         })
+        //         if (res.status === 200) {
+        //             let books = await res.json()
+        //             setState(prev => {
+        //                 prev.loading = false
+        //                 prev.books = books
+        //                 return JSON.parse(JSON.stringify(prev))
+        //             })
+        //             console.log(books)
+        //         } else {
+        //             setState(prevState => ({
+        //                 ...prevState,
+        //                 feedback: 'Token expired',
+        //                 openFeedback: true,
+        //                 loading: false
+        //             }))
+        //         }
+        //
+        //     } else history.push('/login')
+        //
+        // }
+        // // getBooks()
         const axiosGetBooks = async () => {
             const results = await axios.get(BOOK_LIST_URL)
             console.log(results)
@@ -73,7 +73,7 @@ export default function BookList(props) {
 
         }
         axiosGetBooks()
-    }, [])
+    }, [history])
     const handleClickOpen = (id) => {
         setState(prevState => {
             prevState.openDialog = true
