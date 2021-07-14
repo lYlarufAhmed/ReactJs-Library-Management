@@ -55,7 +55,8 @@ export default function Login(props) {
         let parsed = await res.json()
         console.log(parsed)
         if (parsed.success){
-            localStorage.setItem('loggedInUser', parsed.loggedInUser)
+            localStorage.setItem('accessToken', parsed.accessToken)
+            localStorage.setItem('refreshToken', parsed.refreshToken)
             history.push('/books')
         }
         setState(prevState => ({...prevState, loading: false}))

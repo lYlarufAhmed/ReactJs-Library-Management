@@ -9,14 +9,12 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete'
 import ConfirmDialog from "./ConfirmDialog";
 import FeedbackDialog from "./FeedbackDialog";
-import {useHistory} from 'react-router-dom'
 import axios from "axios";
 
 
 const BOOK_LIST_URL = '/books/api'
 
 export default function BookList(props) {
-    const history = useHistory()
     let [state, setState] = useState({
         loading: true, books: [], openDialog: false,
         currentBook: null,
@@ -56,24 +54,25 @@ export default function BookList(props) {
         const axiosGetBooks = async () => {
             const results = await axios.get(BOOK_LIST_URL)
             console.log(results)
-            if (results.status === 200) {
-                setState(prev => {
-                    prev.loading = false
-                    prev.books = results.data
-                    return JSON.parse(JSON.stringify(prev))
-                })
-            } else {
-                setState(prevState => ({
-                    ...prevState,
-                    feedback: 'Token expired',
-                    openFeedback: true,
-                    loading: false
-                }))
-            }
+            setState(prev => {
+                prev.loading = false
+                prev.books = results.data
+                return JSON.parse(JSON.stringify(prev))
+            })
+            // if (results.status === 200) {
+            //
+            // } else {
+            //     setState(prevState => ({
+            //         ...prevState,
+            //         feedback: 'Token expired',
+            //         openFeedback: true,
+            //         loading: false
+            //     }))
+            // }
 
         }
         axiosGetBooks()
-    }, [history])
+    }, [])
     const handleClickOpen = (id) => {
         setState(prevState => {
             prevState.openDialog = true
