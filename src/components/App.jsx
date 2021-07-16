@@ -35,18 +35,17 @@ function setUpInterceptors(history) {
         console.log('Original request ', originalRequest)
         let {status} = error.response
         if (status === 401) {
-            if (localStorage.getItem('access_token') && !originalRequest._retry) {
+            if (!originalRequest._retry) {
                 originalRequest._retry = true
                 await saveNewToken()
                 // history.push('/login')
-                console.log('error ', 403)
+                console.log('error ', 401)
                 return axios(originalRequest)
-            }
-            else{
+            } else {
                 history.replace('/login')
             }
         }
-        if (status === 403){
+        if (status === 403) {
             history.replace('/login')
         }
 
@@ -54,10 +53,10 @@ function setUpInterceptors(history) {
     });
 }
 
-function saveNewToken() {
-    let res = axios.post('http://localhost:3001/auth/token', {refresh_token: localStorage.getItem('refresh_token')})
+async function saveNewToken() {
+    let res = await axios.post('/auth/token', {refresh_token: localStorage.getItem('refreshToken')})
     console.log('from save new token', res)
-    localStorage.setItem('access_token',res.data.acccessToken)
+    localStorage.setItem('accessToken', res.data.accessToken)
 }
 
 export default function App() {
